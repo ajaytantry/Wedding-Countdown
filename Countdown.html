@@ -2,180 +2,73 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Animated Wedding Countdown</title>
-  <!-- Google Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Source+Sans+Pro:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wedding Countdown</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tangerine&display=swap" rel="stylesheet">
+
   <style>
-    /* ---------- Reset & Base ---------- */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Source Sans Pro', sans-serif;
-      color: #fff;
+      background-color: #fff7f0;
+      font-family: Arial, sans-serif;
       text-align: center;
-      position: relative;
-      min-height: 100vh;
-      overflow: hidden;
-      background-color: #8b0000;
-      background-image:
-        radial-gradient(circle, rgba(255,215,0,0.15) 1px, transparent 1px),
-        radial-gradient(circle, rgba(255,215,0,0.15) 1px, transparent 1px);
-      background-size: 20px 20px;
-      background-position: 0 0,10px 10px;
-    }
-    .overlay {
-      position: absolute; inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 1;
-    }
-    .container {
-      position: relative; z-index: 2;
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      padding: 2rem;
+      padding: 20px;
+      border: 30px solid transparent;
+      background-image: url('https://img.freepik.com/premium-vector/indian-traditional-golden-border-design_73856-1282.jpg');
+      background-repeat: repeat;
+      background-size: contain;
     }
 
-    /* ---------- Title & Subtitle ---------- */
     h1 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 4rem; color: #ffd700;
-      margin-bottom: 0.2em;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-    p.subtitle {
-      font-size: 1.2rem; margin-bottom: 2rem;
-      letter-spacing: 1px;
+      font-family: 'Tangerine', cursive;
+      font-size: 64px;
+      color: #7B3F00;
+      margin-top: 30px;
     }
 
-    /* ---------- Fade-In Animation ---------- */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ---------- Countdown Display ---------- */
     #countdown {
-      display: flex; gap: 1rem;
-      flex-wrap: wrap; justify-content: center;
-    }
-    .time-box {
-      --i: 0; /* will be overridden inline */
-      background: rgba(255, 215, 0, 0.1);
-      border: 2px solid #ffd700;
-      border-radius: 0.5rem;
-      padding: 1rem 1.5rem;
-      min-width: 80px;
-      opacity: 0;
-      animation: fadeInUp 0.6s ease forwards;
-      animation-delay: calc(var(--i) * 0.2s);
-    }
-    .time-box span.value {
-      display: block;
-      font-size: 2.5rem; font-weight: 700;
-      line-height: 1;
-    }
-    .time-box span.label {
-      text-transform: uppercase;
-      font-size: 0.9rem; letter-spacing: 0.05em;
-      margin-top: 0.3em;
+      font-size: 40px;
+      font-weight: bold;
+      color: #4B0082;
+      margin: 20px 0;
     }
 
-    /* ---------- Pulse Animation ---------- */
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50%      { transform: scale(1.2); }
-    }
-    .value.pulse {
-      animation: pulse 0.5s ease;
-    }
-
-    /* ---------- Footer ---------- */
-    footer {
-      position: absolute; bottom: 1rem;
-      width: 100%; font-size: 0.9rem;
-      color: #e0e0e0; z-index: 2;
+    .footer-message {
+      font-size: 22px;
+      color: #333;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
-  <div class="container">
-    <h1>Our Wedding</h1>
-    <p class="subtitle">Counting down to the big day — November 26 2025, 12:10 PM</p>
+  <h1>💍 Countdown to the Sacred Ceremony 💐</h1>
+  <div id="countdown">Loading countdown...</div>
 
-    <div id="countdown">
-      <div class="time-box" style="--i:0">
-        <span id="days" class="value">00</span>
-        <span class="label">Days</span>
-      </div>
-      <div class="time-box" style="--i:1">
-        <span id="hours" class="value">00</span>
-        <span class="label">Hours</span>
-      </div>
-      <div class="time-box" style="--i:2">
-        <span id="minutes" class="value">00</span>
-        <span class="label">Minutes</span>
-      </div>
-      <div class="time-box" style="--i:3">
-        <span id="seconds" class="value">00</span>
-        <span class="label">Seconds</span>
-      </div>
-    </div>
+  <div class="footer-message">
+    We're so excited to celebrate this special day with you!<br/>
+    Mark your calendars: <strong>November 26th, 2025 @ 12:10 PM</strong>
   </div>
 
-  <footer>Designed with love ❤️</footer>
-
   <script>
-    const nowYear = new Date().getFullYear();
-    const target = new Date(nowYear, 10, 26, 12, 10, 0).getTime();
+    const ceremonyDate = new Date("November 26, 2025 12:10:00").getTime();
+    const countdownElement = document.getElementById("countdown");
 
-    function animateValue(el, newValue) {
-      if (el.textContent !== newValue) {
-        el.textContent = newValue;
-        el.classList.add('pulse');
-      }
-    }
+    const updateCountdown = setInterval(function () {
+      const now = new Date().getTime();
+      const timeLeft = ceremonyDate - now;
 
-    function updateCountdown() {
-      const delta = target - Date.now();
-      if (delta <= 0) {
-        clearInterval(timerInterval);
-        document.getElementById('countdown').innerHTML =
-          '<h2>The wedding day has arrived!</h2>';
+      if (timeLeft < 0) {
+        clearInterval(updateCountdown);
+        countdownElement.innerHTML = "🎉 It's time for the wedding!";
         return;
       }
 
-      let rem = delta;
-      const days = String(Math.floor(rem / (1000*60*60*24))).padStart(2,'0');
-      rem %= 1000*60*60*24;
-      const hours = String(Math.floor(rem / (1000*60*60))).padStart(2,'0');
-      rem %= 1000*60*60;
-      const minutes = String(Math.floor(rem / (1000*60))).padStart(2,'0');
-      rem %= 1000*60;
-      const seconds = String(Math.floor(rem/1000)).padStart(2,'0');
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-      [
-        ['days', days],
-        ['hours', hours],
-        ['minutes', minutes],
-        ['seconds', seconds]
-      ].forEach(([id, val]) => {
-        const el = document.getElementById(id);
-        animateValue(el, val);
-      });
-    }
-
-    // remove pulse class after animation ends
-    document.querySelectorAll('.value').forEach(el => {
-      el.addEventListener('animationend', () => el.classList.remove('pulse'));
-    });
-
-    updateCountdown();
-    const timerInterval = setInterval(updateCountdown, 1000);
+      countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }, 1000);
   </script>
 </body>
 </html>
