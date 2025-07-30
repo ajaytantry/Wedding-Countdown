@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Animated Wedding Countdown</title>
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Source+Sans+Pro:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ---------- Reset & Base ---------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Source Sans Pro', sans-serif;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background-color: #8b0000;
+      background-image:
+        radial-gradient(circle, rgba(255,215,0,0.15) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,215,0,0.15) 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-position: 0 0,10px 10px;
+    }
+    .overlay {
+      position: absolute; inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1;
+    }
+    .container {
+      position: relative; z-index: 2;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 2rem;
+    }
+
+    /* ---------- Title & Subtitle ---------- */
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4rem; color: #ffd700;
+      margin-bottom: 0.2em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    p.subtitle {
+      font-size: 1.2rem; margin-bottom: 2rem;
+      letter-spacing: 1px;
+    }
+
+    /* ---------- Fade-In Animation ---------- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- Countdown Display ---------- */
+    #countdown {
+      display: flex; gap: 1rem;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .time-box {
+      --i: 0; /* will be overridden inline */
+      background: rgba(255, 215, 0, 0.1);
+      border: 2px solid #ffd700;
+      border-radius: 0.5rem;
+      padding: 1rem 1.5rem;
+      min-width: 80px;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease forwards;
+      animation-delay: calc(var(--i) * 0.2s);
+    }
+    .time-box span.value {
+      display: block;
+      font-size: 2.5rem; font-weight: 700;
+      line-height: 1;
+    }
+    .time-box span.label {
+      text-transform: uppercase;
+      font-size: 0.9rem; letter-spacing: 0.05em;
+      margin-top: 0.3em;
+    }
+
+    /* ---------- Pulse Animation ---------- */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.2); }
+    }
+    .value.pulse {
+      animation: pulse 0.5s ease;
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      position: absolute; bottom: 1rem;
+      width: 100%; font-size: 0.9rem;
+      color: #e0e0e0; z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container">
+    <h1>Our Wedding</h1>
+    <p class="subtitle">Counting down to the big day — November 26, 12 PM</p>
+
+    <div id="countdown">
+      <div class="time-box" style="--i:0">
+        <span id="days" class="value">00</span>
+        <span class="label">Days</span>
+      </div>
+      <div class="time-box" style="--i:1">
+        <span id="hours" class="value">00</span>
+        <span class="label">Hours</span>
+      </div>
+      <div class="time-box" style="--i:2">
+        <span id="minutes" class="value">00</span>
+        <span class="label">Minutes</span>
+      </div>
+      <div class="time-box" style="--i:3">
+        <span id="seconds" class="value">00</span>
+        <span class="label">Seconds</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>Designed with love ❤️</footer>
+
+  <script>
+    const nowYear = new Date().getFullYear();
+    const target = new Date(nowYear, 10, 26, 12, 0, 0).getTime();
+
+    function animateValue(el, newValue) {
+      if (el.textContent !== newValue) {
+        el.textContent = newValue;
+        el.classList.add('pulse');
+      }
+    }
+
+    function updateCountdown() {
+      const delta = target - Date.now();
+      if (delta <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('countdown').innerHTML =
+          '<h2>The wedding day has arrived!</h2>';
+        return;
+      }
+
+      let rem = delta;
+      const days = String(Math.floor(rem / (1000*60*60*24))).padStart(2,'0');
+      rem %= 1000*60*60*24;
+      const hours = String(Math.floor(rem / (1000*60*60))).padStart(2,'0');
+      rem %= 1000*60*60;
+      const minutes = String(Math.floor(rem / (1000*60))).padStart(2,'0');
+      rem %= 1000*60;
+      const seconds = String(Math.floor(rem/1000)).padStart(2,'0');
+
+      [
+        ['days', days],
+        ['hours', hours],
+        ['minutes', minutes],
+        ['seconds', seconds]
+      ].forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        animateValue(el, val);
+      });
+    }
+
+    // remove pulse class after animation ends
+    document.querySelectorAll('.value').forEach(el => {
+      el.addEventListener('animationend', () => el.classList.remove('pulse'));
+    });
+
+    updateCountdown();
+    const timerInterval = setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
